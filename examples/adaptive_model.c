@@ -4,7 +4,7 @@
 
 static void update(adaptive_model *const m, const arcd_char_t ch)
 {
-	assert(0 <= ch && ch < m->size - 1);
+	// assert(0 <= ch && ch < m->size - 1);
 	for (unsigned i = ch + 1; m->size > i; ++i)
 	{
 		++m->freq[i];

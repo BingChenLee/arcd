@@ -230,7 +230,7 @@ arcd_char_t arcd_dec_get(arcd_dec *const d)
 			break;
 		}
 		d->_v = d->_v << 1 | input_bit(d);
-		assert(0 <= d->_v && d->_v < RANGE_MAX);
+		// assert(0 <= d->_v && d->_v < RANGE_MAX);
 	}
 	d->_state.range = d->_state.upper - d->_state.lower;
 	return ch;

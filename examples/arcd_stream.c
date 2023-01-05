@@ -1,8 +1,9 @@
+#define _XOPEN_SOURCE 600
 #include <string.h>
 #include <stdio.h>
 #include <unistd.h>
-#include <arcd.h>
-#include <adaptive_model.h>
+#include "../arcd/arcd.h"
+#include "adaptive_model.h"
 
 void output(const arcd_buf_t buf, const unsigned buf_bits, void *const io)
 {
@@ -32,6 +33,7 @@ static const arcd_char_t EOS = 1 << (8 * sizeof(symbol_t));
 
 int main(int argc, char *argv[])
 {
+	printf("argc: %d\n", argc);
 	if (2 != argc)
 	{
 		usage(stderr);
@@ -42,7 +44,9 @@ int main(int argc, char *argv[])
 		usage(stdout);
 		return 0;
 	}
+	printf("get stdin %s\n",argv[1]);
 	FILE *const in = fdopen(dup(fileno(stdin)), "rb");
+	printf("get stdout\n");
 	FILE *const out = fdopen(dup(fileno(stdout)), "wb");
 	adaptive_model model;
 	adaptive_model_create(&model, EOS + 1);
@@ -53,6 +57,7 @@ int main(int argc, char *argv[])
 		symbol_t sym;
 		while (0 < fread(&sym, sizeof(sym), 1, in))
 		{
+			// printf("Size: %ld sym:%ld\n",fread(&sym, sizeof(sym), 1, in),sizeof(sym));
 			arcd_enc_put(&enc, sym);
 		}
 		arcd_enc_put(&enc, EOS);
@@ -65,6 +70,7 @@ int main(int argc, char *argv[])
 		arcd_char_t ch;
 		while (EOS != (ch = arcd_dec_get(&dec)))
 		{
+			printf("EOS: %d\n",EOS);
 			const symbol_t sym = (unsigned char)ch;
 			fwrite(&sym, sizeof(sym), 1, out);
 		}
